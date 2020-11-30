@@ -4,10 +4,10 @@ import numpy as np
 import cv2
 
 
-image_name = "tree"
+image_name = "landing pattern"
 
 print( 'read an image from file')
-color_image = cv2.imread("images/tree.jpg",cv2.IMREAD_COLOR)
+color_image = cv2.imread("images/Landing_Aid_Pattern.png",cv2.IMREAD_COLOR)
 
 print('display image in native color')
 cv2.imshow("Original Image",color_image)
