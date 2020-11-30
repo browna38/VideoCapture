@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # import the necessary packages
 from imutils.video import VideoStream
 from pyzbar import pyzbar
@@ -15,7 +17,7 @@ ap.add_argument("-o", "--output", type=str, default="barcodes.csv",
 args = vars(ap.parse_args())
 
 # Create a VideoCapture object
-cap = cv2.VideoCapture(2, cv2.CAP_DSHOW)
+cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)
 
 # Check if camera opened successfully
 if (cap.isOpened() == False): 
@@ -23,8 +25,8 @@ if (cap.isOpened() == False):
 
 # Default resolutions of the frame are obtained.The default resolutions are system dependent.
 # We convert the resolutions from float to integer.
-frame_width = int(400)
-frame_height = int(300)
+frame_width = int(720)
+frame_height = int(720)
 
 # Define the codec and create VideoWriter object.The output is stored in 'outpy.avi' file.
 out = cv2.VideoWriter('outpy.avi',cv2.VideoWriter_fourcc('M','J','P','G'), 10, (frame_width,frame_height))
@@ -38,7 +40,7 @@ while(True):
   ret, frame = cap.read()
 
   if ret == True: 
-    frame = imutils.resize(frame, width=400)
+    frame = imutils.resize(frame, frame_width)
     
     # find the barcodes in the frame and decode each of the barcodes
     barcodes = pyzbar.decode(frame)
@@ -55,7 +57,7 @@ while(True):
         barcodeType = barcode.type
             # draw the barcode data and barcode type on the image
         text = "{} ({})".format(barcodeData, barcodeType)
-        center = "%d , %d" % (((x+w)/w),((y+h)/h))
+        center = "%d , %d" % ((x+w)/2,(y+h)/2)
         text = text + center
         cv2.putText(frame, text, (x, y - 10),
             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
