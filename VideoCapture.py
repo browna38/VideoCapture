@@ -16,7 +16,7 @@ ap.add_argument("-o", "--output", type=str, default="barcodes.csv",
 	help="path to output CSV file containing barcodes")
 args = vars(ap.parse_args())
 
-exceptedDate = 'Aurora Aerial'
+exceptedData = 'Aurora Aerial'
 # Create a VideoCapture object
 cap = cv2.VideoCapture(0)
 
@@ -66,7 +66,7 @@ while(True):
             # if the barcode text is currently not in our CSV file, write
             # the timestamp + barcode to disk and update the set
         timenow = datetime.datetime.now()
-        if barcodeData == exceptedDate:
+        if barcodeData == exceptedData:
             csv.write("{},{},{},{},{},{},{},{}\n".format(datetime.date.today(),timenow.hour,timenow.minute,timenow.second,timenow.microsecond,
                 barcodeData,(x+w)/2,(y+h)/2))
             csv.flush()
