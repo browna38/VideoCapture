@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # import the necessary packages
 from imutils.video import VideoStream
 from pyzbar import pyzbar
@@ -14,8 +16,9 @@ ap.add_argument("-o", "--output", type=str, default="barcodes.csv",
 	help="path to output CSV file containing barcodes")
 args = vars(ap.parse_args())
 
+exceptedData = 'Aurora Aerial'
 # Create a VideoCapture object
-cap = cv2.VideoCapture(2, cv2.CAP_DSHOW)
+cap = cv2.VideoCapture(0)
 
 # Check if camera opened successfully
 if (cap.isOpened() == False): 
@@ -23,8 +26,8 @@ if (cap.isOpened() == False):
 
 # Default resolutions of the frame are obtained.The default resolutions are system dependent.
 # We convert the resolutions from float to integer.
-frame_width = int(400)
-frame_height = int(300)
+frame_width = int(cap.get(3))
+frame_height = int(cap.get(4))
 
 # Define the codec and create VideoWriter object.The output is stored in 'outpy.avi' file.
 out = cv2.VideoWriter('outpy.avi',cv2.VideoWriter_fourcc('M','J','P','G'), 10, (frame_width,frame_height))
@@ -33,12 +36,13 @@ out = cv2.VideoWriter('outpy.avi',cv2.VideoWriter_fourcc('M','J','P','G'), 10, (
 # barcodes found thus far
 csv = open(args["output"], "w")
 found = set()
+csv.write("Date,Hour, Minute, Second, MicroSec,Name,x,y\n")
 
 while(True):
   ret, frame = cap.read()
 
   if ret == True: 
-    frame = imutils.resize(frame, width=400)
+    frame = imutils.resize(frame, frame_width)
     
     # find the barcodes in the frame and decode each of the barcodes
     barcodes = pyzbar.decode(frame)
@@ -55,15 +59,16 @@ while(True):
         barcodeType = barcode.type
             # draw the barcode data and barcode type on the image
         text = "{} ({})".format(barcodeData, barcodeType)
-        center = "%d , %d" % (((x+w)/w),((y+h)/h))
+        center = "%d , %d" % ((x+w)/2,(y+h)/2)
         text = text + center
         cv2.putText(frame, text, (x, y - 10),
             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
             # if the barcode text is currently not in our CSV file, write
             # the timestamp + barcode to disk and update the set
-        if barcodeData not in found:
-            csv.write("{},{}\n".format(datetime.datetime.now(),
-                barcodeData,x,w,y,h))
+        timenow = datetime.datetime.now()
+        if barcodeData == exceptedData:
+            csv.write("{},{},{},{},{},{},{},{}\n".format(datetime.date.today(),timenow.hour,timenow.minute,timenow.second,timenow.microsecond,
+                barcodeData,(x+w)/2,(y+h)/2))
             csv.flush()
             found.add(barcodeData)
     
