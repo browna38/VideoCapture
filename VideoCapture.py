@@ -10,6 +10,7 @@ import time
 import cv2
 import numpy
 import atexit
+import os
 
 def exit_handler():
     print('My application is ending!')
@@ -40,8 +41,12 @@ if (cap.isOpened() == False):
 frame_width = int(cap.get(3))
 frame_height = int(cap.get(4))
 
+
+i = 0
+while os.path.exists(f"outpy{i}.avi"):
+    i += 1
 # Define the codec and create VideoWriter object.The output is stored in 'outpy.avi' file.
-out = cv2.VideoWriter('outpy.avi',cv2.VideoWriter_fourcc('M','J','P','G'), 10, (frame_width,frame_height))
+out = cv2.VideoWriter(f'outpy{i}.avi',cv2.VideoWriter_fourcc('M','J','P','G'), 60, (frame_width,frame_height))
 
 # open the output CSV file for writing and initialize the set of
 # barcodes found thus far
@@ -87,7 +92,7 @@ while(True):
     out.write(frame)
 
     # Display the resulting frame    
-    cv2.imshow('frame',frame)
+    #cv2.imshow('frame',frame)
 
     # Press Q on keyboard to stop recording
     if cv2.waitKey(1) & 0xFF == ord('q'):
