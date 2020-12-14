@@ -9,6 +9,17 @@ import imutils
 import time
 import cv2
 import numpy
+import atexit
+
+def exit_handler():
+    print('My application is ending!')
+    # When everything done, release the video capture and video write objects
+    csv.close()
+    cap.release()
+    out.release()
+
+    # Closes all the frames
+    cv2.destroyAllWindows() 
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
@@ -93,3 +104,5 @@ out.release()
 
 # Closes all the frames
 cv2.destroyAllWindows() 
+
+atexit.register(exit_handler)
